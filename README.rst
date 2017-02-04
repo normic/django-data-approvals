@@ -35,6 +35,7 @@ Add it to your `INSTALLED_APPS`:
         ...
     )
 
+..
 Add Django-Data-Approvals's URL patterns:
 
 .. code-block:: python
