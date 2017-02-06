@@ -13,8 +13,9 @@ from .models import (
 
 
 class ApprovalCreateView(CreateView):
-
     model = Approval
+    fields = ['approvalstate', 'created_by', 'ip_address', 'approvaldata',
+              'content_type']
 
 
 class ApprovalDeleteView(DeleteView):

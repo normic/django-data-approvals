@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
 from django.db import models
+from django.urls import reverse
 from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
-from django.contrib.contenttypes.fields import GenericForeignKey
 from django.utils.translation import ugettext_lazy as _
 
 from annoying.fields import JSONField
@@ -55,3 +55,6 @@ class Approval(models.Model):
             self.content_type,
             self.object_id
         )
+
+    def get_absolute_url(self):
+        return reverse('approval-detail', kwargs={'pk': self.pk})

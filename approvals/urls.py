@@ -6,28 +6,28 @@ from . import views
 
 urlpatterns = [
     url(
-        regex="^Approval/~create/$",
+        regex="^approval/create/$",
         view=views.ApprovalCreateView.as_view(),
-        name='Approval_create',
+        name='approval-create',
     ),
     url(
-        regex="^Approval/(?P<pk>\d+)/~delete/$",
+        regex="^approval/(?P<pk>\d+)/delete/$",
         view=views.ApprovalDeleteView.as_view(),
-        name='Approval_delete',
+        name='approval-delete',
     ),
     url(
-        regex="^Approval/(?P<pk>\d+)/$",
+        regex="^approval/(?P<pk>\d+)/$",
         view=views.ApprovalDetailView.as_view(),
-        name='Approval_detail',
+        name='approval-detail',
     ),
     url(
-        regex="^Approval/(?P<pk>\d+)/~update/$",
+        regex="^approval/(?P<pk>\d+)/update/$",
         view=views.ApprovalUpdateView.as_view(),
-        name='Approval_update',
+        name='approval-update',
     ),
     url(
-        regex="^Approval/$",
+        regex="^approval/$",
         view=views.ApprovalListView.as_view(),
-        name='Approval_list',
+        name='approval-list',
     ),
-	]
+]
