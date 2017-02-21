@@ -19,17 +19,15 @@ class Approval(models.Model):
 
     REQUESTED = 0
     ASSIGNED = 1
-    APPROVED = 2
-    DECLINED = 3
+    FINISHED = 2
 
     APPROVAL_STATES = (
         (REQUESTED, _('Requested')),
         (ASSIGNED, _('Assigned')),
-        (APPROVED, _('Approved')),
-        (DECLINED, _('Declined')),
+        (FINISHED, _('Finished')),
     )
 
-    approvalstate = models.IntegerField(choices=APPROVAL_STATES, default=REQUESTED)
+    state = models.IntegerField(choices=APPROVAL_STATES, default=REQUESTED, editable=False, db_index=True)
     created_at = models.DateTimeField(auto_now_add=True)
     created_by = models.ForeignKey(
         User, null=True, blank=True, related_name='creator')
@@ -39,10 +37,10 @@ class Approval(models.Model):
     content_type = models.ForeignKey(ContentType)
     object_id = models.PositiveIntegerField(null=True, blank=True)
 
-    approval_at = models.DateTimeField(null=True, blank=True)
-    approval_by = models.ForeignKey(
-        User, null=True, blank=True, related_name='approver')
-    approval_reason = models.CharField(max_length=50, blank=True)
+    approver = models.ForeignKey(User, null=True, blank=True, related_name='approver')
+    approved = models.NullBooleanField(null=True, blank=True, db_index=True)
+    approved_at = models.DateTimeField(null=True, blank=True)
+    approved_reason = models.CharField(max_length=50, blank=True)
 
     class Meta(object):
         verbose_name = _('approval')
@@ -51,10 +49,27 @@ class Approval(models.Model):
     def __unicode__(self):
         return u'%d, %s, %s, %s' % (
             self.id,
-            self.get_approvalstate_display(),
+            self.get_state_display(),
             self.content_type,
             self.object_id
         )
 
     def get_absolute_url(self):
         return reverse('approval-detail', kwargs={'pk': self.pk})
+
+    def set_approver(self, approver_username):
+        """
+        This method assigns an Approval to an approver by setting the State to ASSIGNED and setting the approver.
+        """
+        try:
+            _approver = User.objects.get(username=approver_username)
+        except _approver.DoesNotExist:
+            return _approver
+        raise AssertionError(_(u'Given username "%s" does not exist!' % _approver))
+
+        self.approver = approver
+        self.state = Approval.ASSIGNED
+        self.save()
+
+    def set_approved(self, approved=None, reason=None):
+        pass
