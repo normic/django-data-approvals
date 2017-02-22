@@ -59,17 +59,44 @@ class Approval(models.Model):
 
     def set_approver(self, approver_username):
         """
-        This method assigns an Approval to an approver by setting the State to ASSIGNED and setting the approver.
+        This method assigns an Approval to an approver by setting the State to ASSIGNED and adding the approver.
         """
         try:
             _approver = User.objects.get(username=approver_username)
-        except _approver.DoesNotExist:
-            return _approver
-        raise AssertionError(_(u'Given username "%s" does not exist!' % _approver))
+        except User.DoesNotExist as err:
+            if not err.args:
+                err.args = ('', )
+            err.args += ("Given username {0} does not exist!".format(approver_username), )
+            raise
 
-        self.approver = approver
+        self.approver = _approver
         self.state = Approval.ASSIGNED
         self.save()
 
-    def set_approved(self, approved=None, reason=None):
-        pass
+    def set_approved(self, approved, approver=None, reason=None):
+        """
+        Sets an Approval as approved or declined and the state to FINISHED.
+        Ensures that only the given approver can act on this Approval.
+
+        :param approved: True or False
+        :param approver: The User who acts as approver, if None the already set approver is used.
+        :param reason: An optional reason - usually used if approval will be False.
+        """
+        self.approved = approved
+        if approver:
+            try:
+                _approver = User.objects.get(username=approver)
+            except User.DoesNotExist as err:
+                if not err.args:
+                    err.args = ('',)
+                err.args += ("Given approver {0} does not exist!".format(approver),)
+                raise
+            self.approver = _approver
+
+        if reason:
+            self.reason = reason
+
+        self.state = Approval.FINISHED
+        self.save()
+
+

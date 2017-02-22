@@ -28,7 +28,7 @@ class TestApprovals(TestCase):
         user_ct = ContentType.objects.get_for_model(cls.user)
 
         approval = Approval.objects.create(
-            approvalstate=Approval.REQUESTED,
+            state=Approval.REQUESTED,
             created_by=cls.user,
             content_type=user_ct
         )
@@ -38,10 +38,22 @@ class TestApprovals(TestCase):
         self.assertTrue(isinstance(a, Approval))
         self.assertEqual(a.__unicode__(), u'%d, %s, %s, %s' % (
             a.id,
-            a.get_approvalstate_display(),
+            a.get_state_display(),
             a.content_type,
             a.object_id
         ))
+
+    def test_set_approver(self):
+        a = Approval.objects.get(pk=1)
+        a.set_approver(self.user)
+        self.assertEqual(a.state, Approval.ASSIGNED, "set_Approver didn't set correct state.")
+        self.assertEqual(a.approver, self.user, "set_approver didn't set correct user.")
+
+    def test_set_approved_true(self):
+        a = Approval.objects.get(pk=1)
+        a.set_approved(approved=True)
+        self.assertEqual(a.state, Approval.FINISHED, "expected state FINISHED, but got {0}".format(a.state))
+        self.assertEqual(a.approved, True, "expected value True, but got {0}".format(a.approved))
 
     def tearDown(self):
         pass
