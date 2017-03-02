@@ -56,7 +56,7 @@ class Approval(models.Model):
         )
 
     def get_absolute_url(self):
-        return reverse('approval-detail', kwargs={'pk': self.pk})
+        return reverse('approvals:approval_detail', kwargs={'pk': self.pk})
 
     def set_approver(self, approver_username):
         """
