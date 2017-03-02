@@ -55,5 +55,16 @@ class TestApprovals(TestCase):
         self.assertEqual(a.state, Approval.FINISHED, "expected state FINISHED, but got {0}".format(a.state))
         self.assertEqual(a.approved, True, "expected value True, but got {0}".format(a.approved))
 
+    def test_set_approved_false_missing_reason(self):
+        a = Approval.objects.get(pk=1)
+        self.assertRaises(ValueError, a.set_approved, approved=False)
+
+    def test_set_approved_false(self):
+        a = Approval.objects.get(pk=1)
+        a.set_approved(approved=False, reason='Testreason')
+        self.assertEqual(a.state, Approval.FINISHED, "expected state FINISHED, but got {0}".format(a.state))
+        self.assertEqual(a.approved_reason, 'Testreason', "did not get expected reason")
+        self.assertEqual(a.approved, False, "expected value False, but got {0}".format(a.approved))
+
     def tearDown(self):
         pass

@@ -77,11 +77,11 @@ class Approval(models.Model):
     def set_approved(self, approved, approver=None, reason=None):
         """
         Sets an Approval as approved or declined and the state to FINISHED.
-        Ensures that only the given approver can act on this Approval.
+        Ensures that only a valid user can act on this Approval.
 
         :param approved: True or False
         :param approver: The User who acts as approver, if None the already set approver is used.
-        :param reason: An optional reason - usually used if approval will be False.
+        :param reason: An optional reason, but mandatory if approved is False.
         """
         self.approved = approved
         if approver:
@@ -94,10 +94,10 @@ class Approval(models.Model):
                 raise
             self.approver = _approver
 
-        if reason:
-            self.reason = reason
+        if not approved and reason is None:
+            raise ValueError("If approved is False, reason must not be None!")
+        elif reason is not None:
+            self.approved_reason = reason
 
         self.state = Approval.FINISHED
         self.save()
-
-
