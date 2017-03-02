@@ -4,7 +4,8 @@ from django.views.generic import (
     DeleteView,
     DetailView,
     UpdateView,
-    ListView
+    ListView,
+    TemplateView
 )
 
 from .models import (
@@ -12,9 +13,13 @@ from .models import (
 )
 
 
+class ApprovalIndexView(TemplateView):
+    template_name = "approvals/index.html"
+
+
 class ApprovalCreateView(CreateView):
     model = Approval
-    fields = ['state', 'created_by', 'ip_address', 'approvaldata', 'content_type']
+    fields = ['created_by', 'approvaldata', 'content_type']
 
 
 class ApprovalDeleteView(DeleteView):
