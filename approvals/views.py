@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+from django.core.urlresolvers import reverse_lazy
+
 from django.views.generic import (
     CreateView,
     DeleteView,
@@ -24,6 +26,7 @@ class ApprovalCreateView(CreateView):
 
 class ApprovalDeleteView(DeleteView):
     model = Approval
+    success_url = reverse_lazy('approvals:approval_list')
 
 
 class ApprovalDetailView(DetailView):
@@ -32,6 +35,7 @@ class ApprovalDetailView(DetailView):
 
 class ApprovalUpdateView(UpdateView):
     model = Approval
+    fields = ['approvaldata', 'content_type']
 
 
 class ApprovalListView(ListView):
