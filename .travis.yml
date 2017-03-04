@@ -2,6 +2,12 @@
 
 language: python
 
+# test on travis on specific branches
+branches:
+  only:
+    - master
+    - develop
+
 python:
   - "3.5"
 
