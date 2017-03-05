@@ -1,6 +1,6 @@
-=============================
+=====================
 Django-Data-Approvals
-=============================
+=====================
 
 .. image:: https://badge.fury.io/py/django-data-approvals.svg
     :target: https://badge.fury.io/py/django-data-approvals
@@ -13,10 +13,12 @@ Django-Data-Approvals
 
 A Django app which makes changes of users approvable, before writing to the production database.
 
-Documentation
--------------
 
-The full documentation is at https://django-data-approvals.readthedocs.io.
+.. Documentation
+.. -------------
+..
+.. The full documentation is at https://django-data-approvals.readthedocs.io.
+
 
 Quickstart
 ----------
@@ -48,6 +50,13 @@ Add Django-Data-Approvals's URL patterns:
         url(r'^', include(approvals_urls)),
         ...
     ]
+
+
+To create an Approval entry simply overwrite the save method.
+
+.. code-block:: python
+    def save(self, *args, **kwargs):
+        ...
 
 Features
 --------

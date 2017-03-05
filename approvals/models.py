@@ -48,7 +48,7 @@ class Approval(models.Model):
         verbose_name_plural = _('approvals')
 
     def __unicode__(self):
-        return u'%d, %s, %s, %s' % (
+        return u'%s, %s, %s, %s' % (
             self.id,
             self.get_state_display(),
             self.content_type,
@@ -57,6 +57,31 @@ class Approval(models.Model):
 
     def get_absolute_url(self):
         return reverse('approvals:approval_detail', kwargs={'pk': self.pk})
+
+    @classmethod
+    def create(cls, creator, approvaldata, approval_for_model, object_id=None, ip_address=None):
+        """
+        Convenience method which creates a new Approval entry
+        :param creator: a User instance
+        :param approvaldata: the data which should be approved as JSON
+        :param approval_for_model: the related model where the approval belongs to
+        :param object_id: the changable object ID or None if it's a new object
+        :param ip_address: optional IP adress of the requesting User
+        :return:
+        """
+        try:
+            created_by = User.objects.get(username=creator)
+        except User.DoesNotExist as err:
+            if not err.args:
+                err.args = ('', )
+            err.args += ("Given username {0} does not exist!".format(creator), )
+            raise
+
+        ct = ContentType.objects.get_for_model(approval_for_model)
+        new_approval = cls(created_by=created_by, approvaldata=approvaldata,
+                           content_type=ct, object_id=object_id, ip_address=ip_address)
+        new_approval.save()
+        return new_approval
 
     def set_approver(self, approver_username):
         """
