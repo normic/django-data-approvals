@@ -52,11 +52,19 @@ Add Django-Data-Approvals's URL patterns:
     ]
 
 
-To create an Approval entry simply overwrite the save method.
+To create an Approval entry simply overwrite save_model.
 
 .. code-block:: python
-    def save(self, *args, **kwargs):
-        ...
+    # admin.py
+    from approvals import Approval
+
+    def save(self, request, obj, form, change, commit=False):
+        Approval.create(request.user, obj, self.model, obj.id)
+
+This would create a new Approval with the data from the edited or created obj.
+The obj will not directly show up in your model, you'll have to retrieve and approve it from the
+Approval first.
+
 
 Features
 --------
