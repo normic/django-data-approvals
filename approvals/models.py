@@ -1,15 +1,14 @@
 # -*- coding: utf-8 -*-
 
-from django.db import models
-
-from django.core.urlresolvers import reverse
 from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
+from django.core.urlresolvers import reverse
+from django.db import models
+from django.utils.encoding import python_2_unicode_compatible
 from django.utils.translation import ugettext_lazy as _
 
-from annoying.fields import JSONField
 
-
+@python_2_unicode_compatible
 class Approval(models.Model):
     """
     Describes an object which is requested for change or add.
@@ -23,37 +22,29 @@ class Approval(models.Model):
     FINISHED = 2
 
     APPROVAL_STATES = (
-        (REQUESTED, _('Requested')),
-        (ASSIGNED, _('Assigned')),
-        (FINISHED, _('Finished')),
+        (REQUESTED, _('REQUESTED')),
+        (ASSIGNED, _('ASSIGNED')),
+        (FINISHED, _('FINISHED')),
     )
 
     state = models.IntegerField(choices=APPROVAL_STATES, default=REQUESTED, editable=False, db_index=True)
     created_at = models.DateTimeField(auto_now_add=True)
-    created_by = models.ForeignKey(
-        User, null=True, blank=True, related_name='creator')
+    created_by = models.ForeignKey(User, null=True, blank=True, related_name='creator')
     ip_address = models.GenericIPAddressField(null=True, blank=True)
-    # Todo: make (optional) use of new JSONField which requires Django> 1.9 and Postgres >=9.4 and Psycopg2 >= 2.5.4
-    approvaldata = JSONField(blank=True, null=True)
+    approvaldata = models.TextField(blank=True)
     content_type = models.ForeignKey(ContentType)
     object_id = models.PositiveIntegerField(null=True, blank=True)
-
     approver = models.ForeignKey(User, null=True, blank=True, related_name='approver')
     approved = models.NullBooleanField(null=True, blank=True, db_index=True)
     approved_at = models.DateTimeField(null=True, blank=True)
     approved_reason = models.CharField(max_length=50, blank=True)
 
     class Meta(object):
-        verbose_name = _('approval')
-        verbose_name_plural = _('approvals')
+        verbose_name = _('Approval')
+        verbose_name_plural = _('Approvals')
 
-    def __unicode__(self):
-        return u'%s, %s, %s, %s' % (
-            self.id,
-            self.get_state_display(),
-            self.content_type,
-            self.object_id
-        )
+    def __str__(self):
+        return '%s %s' % (self.id, self.get_state_display())
 
     def get_absolute_url(self):
         return reverse('approvals:approval_detail', kwargs={'pk': self.pk})
@@ -78,7 +69,7 @@ class Approval(models.Model):
             raise
 
         ct = ContentType.objects.get_for_model(approval_for_model)
-        new_approval = cls(created_by=created_by, approvaldata=approvaldata,
+        new_approval = cls(created_by=created_by, approvaldata=approvaldata.__dict__,
                            content_type=ct, object_id=object_id, ip_address=ip_address)
         new_approval.save()
         return new_approval

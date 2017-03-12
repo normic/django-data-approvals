@@ -9,9 +9,9 @@ Tests for `django-data-approvals` models module.
 """
 
 from django.test import TestCase
-
 from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
+
 from approvals.models import Approval
 
 
@@ -36,12 +36,7 @@ class TestApprovals(TestCase):
     def test_retrieve(self):
         a = Approval.objects.get(pk=1)
         self.assertTrue(isinstance(a, Approval))
-        self.assertEqual(a.__unicode__(), u'%d, %s, %s, %s' % (
-            a.id,
-            a.get_state_display(),
-            a.content_type,
-            a.object_id
-        ))
+        self.assertEqual(a.__str__(), '%s %s' % (a.id, a.get_state_display()))
 
     def test_set_approver(self):
         a = Approval.objects.get(pk=1)
