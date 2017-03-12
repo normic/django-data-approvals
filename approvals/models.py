@@ -2,6 +2,7 @@
 
 from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
+from django.core import serializers
 from django.core.urlresolvers import reverse
 from django.db import models
 from django.utils.encoding import python_2_unicode_compatible
@@ -68,8 +69,10 @@ class Approval(models.Model):
             err.args += ("Given username {0} does not exist!".format(creator), )
             raise
 
+        serialized_approvaldata = serializers.serialize("json", [approvaldata])
+
         ct = ContentType.objects.get_for_model(approval_for_model)
-        new_approval = cls(created_by=created_by, approvaldata=approvaldata.__dict__,
+        new_approval = cls(created_by=created_by, approvaldata=serialized_approvaldata,
                            content_type=ct, object_id=object_id, ip_address=ip_address)
         new_approval.save()
         return new_approval
