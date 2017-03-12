@@ -1,6 +1,6 @@
-=============================
+=====================
 Django-Data-Approvals
-=============================
+=====================
 
 .. image:: https://badge.fury.io/py/django-data-approvals.svg
     :target: https://badge.fury.io/py/django-data-approvals
@@ -13,10 +13,12 @@ Django-Data-Approvals
 
 A Django app which makes changes of users approvable, before writing to the production database.
 
-Documentation
--------------
 
-The full documentation is at https://django-data-approvals.readthedocs.io.
+.. Documentation
+.. -------------
+..
+.. The full documentation is at https://django-data-approvals.readthedocs.io.
+
 
 Quickstart
 ----------
@@ -35,7 +37,7 @@ Add it to your `INSTALLED_APPS`:
         ...
     )
 
-..
+
 Add Django-Data-Approvals's URL patterns:
 
 .. code-block:: python
@@ -48,6 +50,21 @@ Add Django-Data-Approvals's URL patterns:
         url(r'^', include(approvals_urls)),
         ...
     ]
+
+
+To create an Approval entry simply overwrite save_model.
+
+.. code-block:: python
+    # admin.py
+    from approvals import Approval
+
+    def save(self, request, obj, form, change, commit=False):
+        Approval.create(request.user, obj, self.model, obj.id)
+
+This would create a new Approval with the data from the edited or created obj.
+The obj will not directly show up in your model, you'll have to retrieve and approve it from the
+Approval first.
+
 
 Features
 --------

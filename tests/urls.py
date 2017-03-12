@@ -6,5 +6,5 @@ from django.conf.urls import url, include
 from approvals.urls import urlpatterns as approvals_urls
 
 urlpatterns = [
-    url(r'^', include(approvals_urls, namespace='approvals')),
+    url(r'approvals/', include(approvals_urls, namespace='approvals')),
 ]

@@ -12,7 +12,8 @@ SECRET_KEY = "dddddddddddddddddddddddddddddddddddddddddddddddddd"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.sqlite3",
-        "NAME": ":memory:",
+        # "NAME": ":memory:",
+        "NAME": "devdb.sqlite3"
     }
 }
 
@@ -31,3 +32,21 @@ if django.VERSION >= (1, 10):
     MIDDLEWARE = ()
 else:
     MIDDLEWARE_CLASSES = ()
+
+TEMPLATES = [
+{
+    'BACKEND': 'django.template.backends.django.DjangoTemplates',
+    'DIRS': ['templates'],
+    'APP_DIRS': True,
+    'OPTIONS': {
+        # 'context_processors': [
+        #     'django.template.context_processors.debug',
+        #     'django.template.context_processors.request',
+        #     'django.contrib.auth.context_processors.auth',
+        #     'django.contrib.messages.context_processors.messages',
+        #     "django.core.context_processors.media",
+        # ],
+    },
+},
+
+]
