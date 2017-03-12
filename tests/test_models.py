@@ -8,9 +8,9 @@ test_django-data-approvals
 Tests for `django-data-approvals` models module.
 """
 
-from django.test import TestCase
 from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
+from django.test import TestCase
 
 from approvals.models import Approval
 
@@ -32,6 +32,11 @@ class TestApprovals(TestCase):
             created_by=cls.user,
             content_type=user_ct
         )
+
+    def test_create(self):
+        # (cls, creator, approvaldata, approval_for_model, object_id=None, ip_address=None):
+        a = Approval.objects.get(pk=1)
+        self.assertEqual(Approval.create(self.user, a, Approval, 1, '127.0.0.1'), Approval.objects.get(pk=2))
 
     def test_retrieve(self):
         a = Approval.objects.get(pk=1)
