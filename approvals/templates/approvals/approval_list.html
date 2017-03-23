@@ -1,1 +1,18 @@
-{{  object_list }}
+{% block content %}
+    <h2>Approvals</h2>
+    <ul>
+        {% for approval in object_list %}
+          <li>{{ approval.get_state_display }}</li>
+          <li>{{ approval.created_at }}</li>
+          <li>{{ approval.created_by }}</li>
+          <li>{{ approval.approvaldata }}</li>
+          <li>{{ approval.content_type.app_label }}</li>
+          <li>{{ approval.object_id }}</li>
+          <li>{{ approval.approver }}</li>
+          <li>{{ approval.approved }}</li>
+          <li>{{ approval.approved_at }}</li>
+          <li>{{ approval.approved_reason }}</li>
+        {% endfor %}
+    </ul>
+{% endblock %}
+
